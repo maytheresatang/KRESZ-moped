@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KRESZ Gyakorló — AM Moped / Moped Theory Practice</title>
+<style>
+  :root {
+    --paper: #EDEAE0;
+    --paper-light: #F7F5EE;
+    --ink: #1A1A1A;
+    --sign-blue: #1B3A6B;
+    --sign-blue-light: #2C4F86;
+    --sign-red: #C8102E;
+    --sign-amber: #F5C400;
+    --line: #C9C4B4;
+    --green: #1E7A3D;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+    min-height: 100vh;
+  }
+
+  @font-face {
+    font-family: 'Sign';
+    src: local('Arial Narrow Bold');
+  }
+
+  .app {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 24px 18px 60px;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-badge {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--sign-red);
+    border: 3px solid white;
+    box-shadow: 0 0 0 2px var(--sign-red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+
+  .brand h1 {
+    font-size: 19px;
+    margin: 0;
+    letter-spacing: -0.2px;
+    font-weight: 800;
+    color: var(--sign-blue);
+  }
+
+  .brand p {
+    margin: 2px 0 0;
+    font-size: 12.5px;
+    color: #5b5648;
+    font-weight: 500;
+  }
+
+  /* lang toggle - looks like a physical switch */
+  .lang-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: var(--ink);
+    border-radius: 999px;
+    padding: 3px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  .lang-toggle button {
+    border: none;
+    background: transparent;
+    color: #aaa;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 8px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.5px;
+  }
+
+  .lang-toggle button.active {
+    background: var(--sign-amber);
+    color: var(--ink);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  }
+
+  /* ===== TOPIC FILTER CHIPS ===== */
+  .topics {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .chip {
+    border: 2px solid var(--ink);
+    background: var(--paper-light);
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 13px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .chip.active {
+    background: var(--sign-blue);
+    color: white;
+    border-color: var(--sign-blue);
+  }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-wrap {
+    margin-bottom: 18px;
+  }
+
+  .progress-track {
+    height: 8px;
+    background: var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 999px;
+    transition: width 0.3s ease;
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 600;
+    color: #5b5648;
+    margin-top: 6px;
+  }
+
+  /* ===== SIGN CARD (the question) ===== */
+  .sign-card {
+    background: var(--paper-light);
+    border-radius: 18px;
+    border: 3px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--ink);
+    padding: 26px 24px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .sign-card .topic-tab {
+    position: absolute;
+    top: -14px;
+    left: 22px;
+    background: var(--sign-amber);
+    border: 2px solid var(--ink);
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+
+  .q-counter {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--sign-blue);
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+  }
+
+  .q-text {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.4;
+    margin: 0 0 20px;
+    color: var(--ink);
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .option-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    border: 2px solid var(--line);
+    background: white;
+    border-radius: 12px;
+    padding: 13px 16px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: inherit;
+  }
+
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--sign-blue);
+    background: #f0f4fa;
+  }
+
+  .option-letter {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .option-btn.correct {
+    border-color: var(--green);
+    background: #e7f5ec;
+  }
+  .option-btn.correct .option-letter {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+
+  .option-btn.wrong {
+    border-color: var(--sign-red);
+    background: #fbe9eb;
+  }
+  .option-btn.wrong .option-letter {
+    background: var(--sign-red);
+    border-color: var(--sign-red);
+    color: white;
+  }
+
+  .option-btn:disabled {
+    cursor: default;
+  }
+
+  .explain-box {
+    margin-top: 18px;
+    padding: 14px 16px;
+    background: #fff8e1;
+    border-left: 4px solid var(--sign-amber);
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .explain-box strong {
+    color: var(--sign-blue);
+  }
+
+  .next-btn {
+    margin-top: 18px;
+    width: 100%;
+    background: var(--sign-blue);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .next-btn:hover { background: var(--sign-blue-light); }
+
+  /* ===== RESULTS SCREEN ===== */
+  .results {
+    text-align: center;
+    padding: 30px 20px;
+  }
+
+  .score-ring {
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 20px;
+    position: relative;
+  }
+
+  .score-ring svg { transform: rotate(-90deg); }
+
+  .score-ring .score-text {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .score-text .pts {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+  .score-text .of {
+    font-size: 12px;
+    font-weight: 600;
+    color: #5b5648;
+  }
+
+  .pass-banner {
+    display: inline-block;
+    padding: 8px 22px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .pass-banner.pass { background: #e7f5ec; color: var(--green); border: 2px solid var(--green); }
+  .pass-banner.fail { background: #fbe9eb; color: var(--sign-red); border: 2px solid var(--sign-red); }
+
+  .results h2 { margin: 14px 0 6px; font-size: 22px; color: var(--sign-blue); }
+  .results p.sub { color: #5b5648; font-size: 14px; margin-bottom: 26px; }
+
+  .restart-btn {
+    background: var(--sign-amber);
+    border: 2px solid var(--ink);
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 14px;
+    padding: 12px 26px;
+    border-radius: 999px;
+    cursor: pointer;
+    margin: 0 6px;
+  }
+
+  .restart-btn.outline {
+    background: transparent;
+  }
+
+  /* ===== START SCREEN ===== */
+  .start-screen {
+    text-align: center;
+    padding: 10px 8px 30px;
+  }
+
+  .start-screen .hero-signs {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  .mini-sign {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 4px solid var(--sign-red);
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--ink);
+  }
+
+  .mini-sign.triangle {
+    border-radius: 8px;
+    transform: rotate(45deg);
+    border-color: var(--sign-amber);
+  }
+  .mini-sign.triangle span { transform: rotate(-45deg); display:block; }
+
+  .mini-sign.blue {
+    border-color: var(--sign-blue);
+    background: var(--sign-blue);
+    color: white;
+  }
+
+  .start-screen h2 {
+    font-size: 24px;
+    color: var(--sign-blue);
+    margin: 0 0 10px;
+  }
+
+  .start-screen p {
+    color: #5b5648;
+    font-size: 14.5px;
+    line-height: 1.6;
+    max-width: 480px;
+    margin: 0 auto 26px;
+  }
+
+  .start-btn {
+    background: var(--sign-blue);
+    color: white;
+    border: none;
+    padding: 15px 36px;
+    border-radius: 999px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 var(--ink);
+    transition: transform 0.1s ease;
+  }
+  .start-btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--ink); }
+
+  .exam-fact {
+    margin-top: 26px;
+    font-size: 12.5px;
+    color: #5b5648;
+    background: var(--paper-light);
+    border: 2px dashed var(--line);
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: inline-block;
+  }
+
+  @media (max-width: 480px) {
+    .q-text { font-size: 16.5px; }
+    .brand h1 { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app" id="app"></div>
+
+<script>
+const QUESTIONS = [
+
+  // ===== ELSŐBBSÉG / RIGHT OF WAY =====
+  {
+    id: 1,
+    topic: "row",
+    en: {
+      q: "You reach an unmarked crossroads with no signs or lights. A car approaches from your right. Who goes first?",
+      options: ["You go first", "The car from the right goes first", "Whoever arrives first", "You must stop and wait 5 seconds"],
+      explain: "With no signs at all, the basic rule applies: traffic coming from the right has priority."
+    },
+    hu: {
+      q: "Jelzés és tábla nélküli kereszteződéshez érsz. Jobbról autó közeledik. Ki megy előbb?",
+      options: ["Te mész előbb", "A jobbról jövő autó megy előbb", "Aki előbb ér oda", "Meg kell állnod és várnod 5 másodpercet"],
+      explain: "Tábla hiányában az alapszabály érvényes: a jobbról érkező jármű élvez elsőbbséget."
+    }
+  },
+  {
+    id: 2,
+    topic: "row",
+    en: {
+      q: "You see a triangular sign with a thick black line and thin black line meeting at a point (give way sign). What must you do?",
+      options: ["Stop completely every time", "Slow down and give way to traffic on the main road", "Speed up to cross quickly", "Sound your horn before crossing"],
+      explain: "This is the 'Give Way' sign. You don't have to stop if the road is clear, but you must yield to traffic on the road you're joining."
+    },
+    hu: {
+      q: "Háromszög alakú táblát látsz, vastag és vékony fekete vonallal (elsőbbségadás kötelező tábla). Mit kell tenned?",
+      options: ["Mindig teljesen meg kell állnod", "Lassítanod kell, és elsőbbséget adni a fő útvonal forgalmának", "Fel kell gyorsulnod, hogy gyorsan átérj", "Dudálnod kell, mielőtt áthajtasz"],
+      explain: "Ez az „Elsőbbségadás kötelező” tábla. Nem kötelező megállni, ha üres az út, de elsőbbséget kell adnod a fő útvonal forgalmának."
+    }
+  },
+  {
+    id: 3,
+    topic: "row",
+    en: {
+      q: "An octagonal red sign with white letters (STOP sign) means:",
+      options: ["Slow down only", "Stop completely, then give way before proceeding", "Stop only if other vehicles are present", "Yield without stopping"],
+      explain: "A STOP sign always requires a full stop, even if the road looks empty, before checking and proceeding."
+    },
+    hu: {
+      q: "A nyolcszögletű piros tábla fehér felirattal (STOP tábla) mit jelent?",
+      options: ["Csak lassítani kell", "Teljesen meg kell állni, majd elsőbbséget adva indulhatsz tovább", "Csak akkor kell megállni, ha más jármű is van ott", "Elsőbbséget kell adni megállás nélkül"],
+      explain: "A STOP tábla mindig teljes megállást követel, akkor is, ha az út üresnek látszik, mielőtt körülnézve továbbindulsz."
+    }
+  },
+  {
+    id: 4,
+    topic: "row",
+    en: {
+      q: "At a roundabout (körforgalom) without traffic lights, who has priority?",
+      options: ["Vehicles entering the roundabout", "Vehicles already circulating inside the roundabout", "Whoever is bigger", "The vehicle on the left"],
+      explain: "Traffic already inside the roundabout has the right of way. Vehicles entering must yield."
+    },
+    hu: {
+      q: "Jelzőlámpa nélküli körforgalomban kinek van elsőbbsége?",
+      options: ["A körforgalomba belépő járműveknek", "A körforgalomban már haladó járműveknek", "A nagyobb járműnek", "A baloldali járműnek"],
+      explain: "A körforgalomban már haladó forgalom élvez elsőbbséget. A belépő járműveknek elsőbbséget kell adniuk."
+    }
+  },
+  {
+    id: 5,
+    topic: "row",
+    en: {
+      q: "A tram is approaching from your left at an intersection with no signs. What do you do?",
+      options: ["Trams always have priority regardless of direction", "You have priority since the tram is on rails", "Ignore the tram, mopeds have priority", "Trams can never enter intersections"],
+      explain: "Trams have priority over other road traffic at most intersections, even when approaching from the left, unless signs say otherwise."
+    },
+    hu: {
+      q: "Tábla nélküli kereszteződésben balról villamos közeledik. Mit teszel?",
+      options: ["A villamosnak mindig elsőbbsége van, függetlenül az iránytól", "Neked van elsőbbséged, mert a villamos sínen halad", "Ne vedd figyelembe a villamost, a mopednek van elsőbbsége", "A villamos sosem hajthat be kereszteződésbe"],
+      explain: "A villamosnak elsőbbsége van a többi közúti forgalommal szemben a legtöbb kereszteződésben, még balról érkezve is, kivéve, ha tábla másként rendelkezik."
+    }
+  },
+
+  // ===== KÖZLEKEDÉSI TÁBLÁK / TRAFFIC SIGNS =====
+  {
+    id: 6,
+    topic: "signs",
+    en: {
+      q: "A round sign with a red border and a black moped symbol on white means:",
+      options: ["Mopeds recommended here", "Moped parking only", "Mopeds prohibited", "Moped repair shop ahead"],
+      explain: "Round signs with a red border are prohibition signs. This one bans mopeds from that road or area."
+    },
+    hu: {
+      q: "Piros szegélyű kör alakú tábla fekete moped szimbólummal fehér alapon mit jelent?",
+      options: ["Mopedek ajánlottak itt", "Csak moped parkolás", "Mopedek számára tilos", "Moped szervíz előttünk"],
+      explain: "A piros szegélyű kör alakú táblák tiltó táblák. Ez megtiltja a mopedek behajtását az adott útra vagy területre."
+    }
+  },
+  {
+    id: 7,
+    topic: "signs",
+    en: {
+      q: "A round blue sign with a white arrow pointing straight up means:",
+      options: ["Recommended direction", "You may turn around here", "Mandatory direction — straight ahead only", "Dead end ahead"],
+      explain: "Blue round signs are mandatory instruction signs. A straight arrow means you must continue straight, no turning."
+    },
+    hu: {
+      q: "Kék kör alakú tábla felfelé mutató fehér nyíllal mit jelent?",
+      options: ["Javasolt irány", "Itt megfordulhatsz", "Kötelező irány — csak egyenesen tovább", "Zsákutca következik"],
+      explain: "A kék kör alakú táblák utasító táblák. Az egyenes nyíl azt jelenti, hogy egyenesen kell továbbhaladni, kanyarodás nélkül."
+    }
+  },
+  {
+    id: 8,
+    topic: "signs",
+    en: {
+      q: "A triangular sign showing a black exclamation mark warns of:",
+      options: ["No specific danger, decorative only", "A general, otherwise unmarked danger ahead", "End of all restrictions", "Mandatory stop ahead"],
+      explain: "The exclamation mark sign is a general warning sign — used for hazards that don't have a dedicated symbol."
+    },
+    hu: {
+      q: "A háromszög alakú tábla fekete felkiáltójellel mire figyelmeztet?",
+      options: ["Nincs különösebb veszély, csak díszítés", "Egy általános, máshogy nem jelzett veszélyre", "Minden korlátozás végére", "Kötelező megállásra"],
+      explain: "A felkiáltójeles tábla általános veszélyt jelző tábla — olyan veszélyekre használják, amelyeknek nincs saját szimbóluma."
+    }
+  },
+  {
+    id: 9,
+    topic: "signs",
+    en: {
+      q: "A round sign showing the number 30 inside a red circle means:",
+      options: ["Minimum speed 30 km/h", "Maximum speed limit of 30 km/h", "Distance to next town is 30 km", "Road number 30"],
+      explain: "A number inside a red-bordered circle is a maximum speed limit sign, in kilometers per hour."
+    },
+    hu: {
+      q: "A 30-as számot tartalmazó, piros körrel szegélyezett kör alakú tábla mit jelent?",
+      options: ["Legalább 30 km/h sebesség", "Legfeljebb 30 km/h sebességkorlátozás", "30 km a következő városig", "30-as útszám"],
+      explain: "A piros szegélyű körben látható szám a megengedett legnagyobb sebességet jelzi km/h-ban."
+    }
+  },
+  {
+    id: 10,
+    topic: "signs",
+    en: {
+      q: "A blue rectangular sign with a white 'P' means:",
+      options: ["Petrol station", "Parking allowed", "Pedestrian crossing", "Police checkpoint"],
+      explain: "A blue square/rectangle with a white 'P' indicates a permitted parking area."
+    },
+    hu: {
+      q: "Kék négyzet vagy téglalap alakú tábla fehér 'P' betűvel mit jelent?",
+      options: ["Benzinkút", "Parkolás megengedett", "Gyalogátkelőhely", "Rendőri ellenőrzés"],
+      explain: "A kék négyzet vagy téglalap alakú tábla fehér „P” betűvel parkolásra kijelölt területet jelez."
+    }
+  },
+  {
+    id: 11,
+    topic: "signs",
+    en: {
+      q: "A circular sign with a red border and a diagonal red line through it, no symbol inside, means:",
+      options: ["No overtaking", "End of all previous prohibitions", "No entry for any vehicle", "Speed limit ends"],
+      explain: "A plain red diagonal line through an otherwise empty circle marks the end of an earlier restriction zone."
+    },
+    hu: {
+      q: "Piros szegélyű kör alakú tábla átlós piros vonallal, szimbólum nélkül, mit jelent?",
+      options: ["Előzni tilos", "Korábbi tiltások vége", "Mindennemű behajtás tilos", "Sebességkorlátozás vége"],
+      explain: "Az átlós piros vonal, szimbólum nélkül, egy korábban érvényben lévő korlátozás végét jelzi."
+    }
+  },
+
+  // ===== SEBESSÉG ÉS FÉKÚT / SPEED & STOPPING DISTANCE =====
+  {
+    id: 12,
+    topic: "speed",
+    en: {
+      q: "What is the maximum design speed for a moped (AM category) in Hungary?",
+      options: ["25 km/h", "35 km/h", "45 km/h", "60 km/h"],
+      explain: "AM category mopeds are limited to a maximum design speed of 45 km/h."
+    },
+    hu: {
+      q: "Mi a segédmotoros kerékpár (AM kategória) legnagyobb tervezési sebessége Magyarországon?",
+      options: ["25 km/h", "35 km/h", "45 km/h", "60 km/h"],
+      explain: "Az AM kategóriás segédmotoros kerékpárok legnagyobb tervezési sebessége 45 km/h."
+    }
+  },
+  {
+    id: 13,
+    topic: "speed",
+    en: {
+      q: "Inside built-up areas (lakott terület), what is the general speed limit unless a sign says otherwise?",
+      options: ["30 km/h", "50 km/h", "70 km/h", "90 km/h"],
+      explain: "The default speed limit inside built-up areas in Hungary is 50 km/h, unless signs indicate a different limit."
+    },
+    hu: {
+      q: "Lakott területen belül, tábla hiányában, mi az általános sebességkorlátozás?",
+      options: ["30 km/h", "50 km/h", "70 km/h", "90 km/h"],
+      explain: "Lakott területen az alapértelmezett sebességkorlátozás 50 km/h, kivéve, ha tábla más sebességet jelez."
+    }
+  },
+  {
+    id: 14,
+    topic: "speed",
+    en: {
+      q: "If your speed doubles, what happens to your braking distance (assuming the same road and conditions)?",
+      options: ["It also doubles", "It stays the same", "It roughly quadruples", "It is cut in half"],
+      explain: "Braking distance grows with the square of speed. Doubling speed roughly quadruples the distance needed to stop."
+    },
+    hu: {
+      q: "Ha a sebességed duplájára nő, mi történik a fékúttal (azonos útviszonyok mellett)?",
+      options: ["Az is megduplázódik", "Nem változik", "Körülbelül négyszeresére nő", "A felére csökken"],
+      explain: "A fékút a sebesség négyzetével arányosan nő. A sebesség duplázása a megállási útszükségletet körülbelül négyszeresére növeli."
+    }
+  },
+  {
+    id: 15,
+    topic: "speed",
+    en: {
+      q: "On a wet road surface, your stopping distance compared to a dry road is:",
+      options: ["Shorter, because rain cleans the tires", "About the same", "Longer, because grip is reduced", "Irrelevant for two-wheelers"],
+      explain: "Wet roads reduce tire grip significantly, increasing stopping distance — this matters even more for two-wheeled vehicles like mopeds."
+    },
+    hu: {
+      q: "Nedves útfelületen a megállási út a száraz úthoz képest:",
+      options: ["Rövidebb, mert az eső megtisztítja a gumikat", "Körülbelül ugyanannyi", "Hosszabb, mert csökken a tapadás", "Lényegtelen kétkerekűeknél"],
+      explain: "A nedves útfelület jelentősen csökkenti a gumik tapadását, ami megnöveli a megállási utat — ez különösen fontos a mopedeknél is."
+    }
+  },
+
+  // ===== A MOPED MŰSZAKI ISMERETEI / MOPED TECHNICAL & EQUIPMENT =====
+  {
+    id: 16,
+    topic: "tech",
+    en: {
+      q: "Which piece of protective equipment is legally required for both rider and passenger on a moped?",
+      options: ["Gloves only", "A certified helmet, properly fastened", "Sunglasses", "A reflective vest at all times"],
+      explain: "Hungarian law requires both the rider and any passenger of a moped to wear a properly fastened, approved helmet."
+    },
+    hu: {
+      q: "Melyik védőfelszerelés kötelező törvény szerint mind a vezetőnek, mind az utasnak mopedon?",
+      options: ["Csak kesztyű", "Bekapcsolt, jóváhagyott bukósisak", "Napszemüveg", "Láthatósági mellény mindig"],
+      explain: "A magyar jogszabályok szerint a moped vezetőjének és utasának is megfelelően becsatolt, jóváhagyott bukósisakot kell viselnie."
+    }
+  },
+  {
+    id: 17,
+    topic: "tech",
+    en: {
+      q: "Before starting a ride, you should check all of the following EXCEPT:",
+      options: ["Tire pressure and condition", "Lights and brake function", "Mirror adjustment", "The weather forecast for next week"],
+      explain: "Pre-ride checks focus on the vehicle itself: tires, lights, brakes, mirrors, and fuel/oil — not unrelated information like a future weather forecast."
+    },
+    hu: {
+      q: "Indulás előtt mindent ellenőrizned kell, KIVÉVE:",
+      options: ["Gumiabroncs nyomása és állapota", "Lámpák és fékek működése", "Tükör beállítása", "A jövő heti időjárás-jelentés"],
+      explain: "Az indulás előtti ellenőrzés a járműre összpontosul: gumik, lámpák, fékek, tükrök, üzemanyag/olaj — nem a jövőbeli, irreleváns adatokra."
+    }
+  },
+  {
+    id: 18,
+    topic: "tech",
+    en: {
+      q: "What is the minimum legal age to ride an AM category moped in Hungary?",
+      options: ["12 years old", "14 years old", "16 years old", "18 years old"],
+      explain: "The AM category license can be obtained from age 14 in Hungary, with the theory exam allowed up to 3 months before that birthday."
+    },
+    hu: {
+      q: "Mi a törvényes minimum életkor AM kategóriás moped vezetésére Magyarországon?",
+      options: ["12 év", "14 év", "16 év", "18 év"],
+      explain: "Az AM kategóriás jogosítvány 14 éves kortól szerezhető meg, az elméleti vizsgára pedig már a születésnap előtt 3 hónappal jelentkezhetsz."
+    }
+  },
+  {
+    id: 19,
+    topic: "tech",
+    en: {
+      q: "Can a moped legally carry a passenger?",
+      options: ["Never, mopeds are single-seat only by law", "Yes, if the moped is designed and approved for two seats", "Yes, always, regardless of design", "Only adults can be passengers, never minors"],
+      explain: "A moped may carry one passenger only if it is technically designed and registered for two seats."
+    },
+    hu: {
+      q: "Szállíthat-e utast a moped törvényesen?",
+      options: ["Soha, a moped törvény szerint csak egyszemélyes", "Igen, ha a moped erre van tervezve és jóváhagyva két személyre", "Igen, mindig, a kialakítástól függetlenül", "Csak felnőtt lehet utas, kiskorú soha"],
+      explain: "A moped csak akkor szállíthat egy utast, ha műszakilag két személyes ülésre van tervezve és jóváhagyva."
+    }
+  },
+
+  // ===== GYALOGOSOK ÉS KERÉKPÁROSOK / PEDESTRIANS & CYCLISTS =====
+  {
+    id: 20,
+    topic: "peds",
+    en: {
+      q: "You approach a marked pedestrian crossing (zebra) with no traffic lights. A pedestrian is waiting to cross. What do you do?",
+      options: ["Speed up to pass before they step out", "Slow down and be ready to stop, give way if they are crossing or about to cross", "Sound your horn to warn them off", "Ignore them since you have priority on the road"],
+      explain: "Drivers must give way to pedestrians who are crossing or clearly about to cross at a marked pedestrian crossing."
+    },
+    hu: {
+      q: "Jelzőlámpa nélküli kijelölt gyalogátkelőhelyhez érsz. Egy gyalogos várakozik, hogy átkeljen. Mit teszel?",
+      options: ["Felgyorsulsz, hogy elérj előtte", "Lassítasz és készen állsz a megállásra, elsőbbséget adsz, ha átkel vagy átkelni készül", "Dudálsz, hogy elriaszd", "Nem veszed figyelembe, mert neked van elsőbbséged az úton"],
+      explain: "A vezetőnek elsőbbséget kell adnia a gyalogosoknak, akik kijelölt gyalogátkelőhelyen átkelnek, vagy nyilvánvalóan átkelni készülnek."
+    }
+  },
+  {
+    id: 21,
+    topic: "peds",
+    en: {
+      q: "When overtaking a cyclist, what is the minimum safe lateral distance you should leave, where road conditions allow?",
+      options: ["No specific distance needed", "At least 1.5 meters", "Touching distance is fine if you're careful", "Only relevant for trucks, not mopeds"],
+      explain: "Hungarian guidance recommends leaving at least 1.5 meters of lateral space when overtaking cyclists, conditions permitting."
+    },
+    hu: {
+      q: "Kerékpáros előzésekor mekkora minimális oldalirányú biztonsági távolságot kell tartani, ha az útviszonyok megengedik?",
+      options: ["Nincs konkrét távolság előírva", "Legalább 1,5 méter", "Az érintés is rendben van, ha óvatos vagy", "Csak teherautókra vonatkozik, mopedre nem"],
+      explain: "A magyar ajánlás szerint legalább 1,5 méter oldalirányú távolságot kell tartani kerékpáros előzésekor, ha az útviszonyok engedik."
+    }
+  },
+  {
+    id: 22,
+    topic: "peds",
+    en: {
+      q: "A school zone sign (children symbol, triangular warning) means you should:",
+      options: ["Ignore it outside school hours entirely", "Slow down and watch carefully for children, especially near schools", "Only relevant for car drivers", "Sound horn continuously through the zone"],
+      explain: "The children/school warning sign means extra caution is needed — children can be unpredictable near roads, and the warning applies to all vehicles including mopeds."
+    },
+    hu: {
+      q: "Az iskola közelségét jelző tábla (gyermek szimbólum, háromszög alakú figyelmeztető tábla) mit jelent?",
+      options: ["Tanórán kívül teljesen elhanyagolható", "Lassíts és figyelj fokozottan a gyerekekre, főleg iskolák közelében", "Csak autósokra vonatkozik", "Folyamatosan dudálni kell a zónán át"],
+      explain: "A gyermekekre figyelmeztető tábla fokozott óvatosságot jelez — a gyerekek kiszámíthatatlanok lehetnek az úton, és a figyelmeztetés minden járműre, így a mopedre is vonatkozik."
+    }
+  },
+
+  // ===== MEGÁLLÁS ÉS PARKOLÁS / STOPPING & PARKING =====
+  {
+    id: 23,
+    topic: "parking",
+    en: {
+      q: "Is it allowed to stop your moped on a pedestrian crossing?",
+      options: ["Yes, mopeds are small enough", "No, stopping on a pedestrian crossing is prohibited", "Only for less than 1 minute", "Only if no pedestrians are nearby"],
+      explain: "Stopping or parking on a marked pedestrian crossing, or within 5 meters before it, is prohibited for all vehicles."
+    },
+    hu: {
+      q: "Megállhat-e a moped gyalogátkelőhelyen?",
+      options: ["Igen, a moped elég kicsi hozzá", "Nem, gyalogátkelőhelyen tilos megállni", "Csak 1 percnél kevesebb ideig", "Csak ha nincs gyalogos a közelben"],
+      explain: "Kijelölt gyalogátkelőhelyen, illetve az előtte lévő 5 méteren belül, minden jármű számára tilos a megállás."
+    }
+  },
+  {
+    id: 24,
+    topic: "parking",
+    en: {
+      q: "What does a solid yellow line along the curb usually indicate?",
+      options: ["Free parking for everyone", "Stopping and parking prohibited", "Moped parking only", "Loading zone for trucks only"],
+      explain: "A solid yellow curb line marks a no-stopping, no-parking zone."
+    },
+    hu: {
+      q: "A folytonos sárga vonal a járdaszegély mentén általában mit jelez?",
+      options: ["Ingyenes parkolás mindenkinek", "Megállni és parkolni tilos", "Csak moped parkolás", "Csak teherautók részére fenntartott árufeltöltő zóna"],
+      explain: "A folytonos sárga szegélyvonal megállási és várakozási tilalmat jelez."
+    }
+  },
+
+  // ===== ELSŐSEGÉLY / FIRST AID BASICS =====
+  {
+    id: 25,
+    topic: "firstaid",
+    en: {
+      q: "At the scene of a moped accident, what is the correct first priority?",
+      options: ["Move the injured person immediately to a hospital yourself", "Secure the scene to prevent further accidents, then check the injured and call emergency services", "Take photos for insurance before anything else", "Wait for the injured person to get up on their own"],
+      explain: "The first priority at any accident scene is safety: secure the area, then assess the injured and call emergency services (112) before anything else."
+    },
+    hu: {
+      q: "Moped baleset helyszínén mi az első helyes lépés?",
+      options: ["A sérültet azonnal magad szállítod kórházba", "Biztosítod a helyszínt a további balesetek elkerülésére, majd megnézed a sérültet és hívod a segélyhívót", "Először fotókat készítesz a biztosításhoz", "Megvárod, hogy a sérült magától felálljon"],
+      explain: "Bármely baleset helyszínén az első prioritás a biztonság: biztosítsd a területet, majd vizsgáld meg a sérültet és hívd a segélyhívót (112), mielőtt bármi mást tennél."
+    }
+  },
+  {
+    id: 26,
+    topic: "firstaid",
+    en: {
+      q: "What is the emergency telephone number in Hungary for police, ambulance, and fire services?",
+      options: ["911", "999", "112", "100"],
+      explain: "112 is the single emergency number in Hungary (and across the EU), connecting to police, ambulance, and fire services."
+    },
+    hu: {
+      q: "Mi a segélyhívó telefonszám Magyarországon rendőrség, mentő és tűzoltóság esetén?",
+      options: ["911", "999", "112", "100"],
+      explain: "A 112 az egységes segélyhívó szám Magyarországon (és egész az EU-ban), amely a rendőrséget, mentőt és tűzoltóságot is eléri."
+    }
+  },
+];
+
+const TOPIC_LABELS = {
+  row:      { en: "Right of Way",       hu: "Elsőbbség" },
+  signs:    { en: "Traffic Signs",      hu: "Táblák" },
+  speed:    { en: "Speed & Distance",   hu: "Sebesség" },
+  tech:     { en: "Moped & Gear",       hu: "Moped & Felszerelés" },
+  peds:     { en: "Pedestrians/Cycles", hu: "Gyalogosok" },
+  parking:  { en: "Stopping/Parking",   hu: "Megállás" },
+  firstaid: { en: "First Aid",          hu: "Elsősegély" },
+};
+
+let state = {
+  screen: "start",      // start | quiz | results
+  lang: "en",
+  topicFilter: "all",
+  pool: [],
+  index: 0,
+  selected: null,
+  answers: [],          // {correct: bool}
+};
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildPool() {
+  let pool = state.topicFilter === "all"
+    ? QUESTIONS
+    : QUESTIONS.filter(q => q.topic === state.topicFilter);
+  return shuffle(pool).map(q => {
+    // shuffle options but keep track of correct index (always index 0 in source data)
+    const optIdx = shuffle(q[state.lang].options.map((_, i) => i));
+    return { ...q, optOrder: optIdx };
+  });
+}
+
+function startQuiz() {
+  state.pool = buildPool();
+  state.index = 0;
+  state.selected = null;
+  state.answers = [];
+  state.screen = "quiz";
+  render();
+}
+
+function selectOption(optPos) {
+  if (state.selected !== null) return;
+  state.selected = optPos;
+  const q = state.pool[state.index];
+  const correctPos = q.optOrder.indexOf(0); // index 0 in original options = correct
+  const isCorrect = optPos === correctPos;
+  state.answers.push({ correct: isCorrect });
+  render();
+}
+
+function nextQuestion() {
+  if (state.index + 1 >= state.pool.length) {
+    state.screen = "results";
+  } else {
+    state.index++;
+    state.selected = null;
+  }
+  render();
+}
+
+function restart(sameTopic) {
+  if (!sameTopic) state.topicFilter = "all";
+  state.screen = "start";
+  render();
+}
+
+function setLang(l) { state.lang = l; render(); }
+function setTopic(t) { state.topicFilter = t; render(); }
+
+function renderTopicsChips() {
+  const all = `<button class="chip ${state.topicFilter==='all'?'active':''}" onclick="setTopic('all')">${state.lang==='en'?'All Topics':'Minden témakör'}</button>`;
+  const chips = Object.keys(TOPIC_LABELS).map(t =>
+    `<button class="chip ${state.topicFilter===t?'active':''}" onclick="setTopic('${t}')">${TOPIC_LABELS[t][state.lang]}</button>`
+  ).join("");
+  return `<div class="topics">${all}${chips}</div>`;
+}
+
+function renderHeader() {
+  return `
+    <header>
+      <div class="brand">
+        <div class="brand-badge">AM<br>50</div>
+        <div>
+          <h1>${state.lang === 'en' ? 'KRESZ Practice' : 'KRESZ Gyakorló'}</h1>
+          <p>${state.lang === 'en' ? 'Moped theory exam prep' : 'Moped elméleti vizsgára felkészítés'}</p>
+        </div>
+      </div>
+      <div class="lang-toggle">
+        <button class="${state.lang==='en'?'active':''}" onclick="setLang('en')">EN</button>
+        <button class="${state.lang==='hu'?'active':''}" onclick="setLang('hu')">HU</button>
+      </div>
+    </header>
+  `;
+}
+
+function renderStart() {
+  const isEn = state.lang === 'en';
+  return `
+    ${renderHeader()}
+    <div class="start-screen">
+      <div class="hero-signs">
+        <div class="mini-sign">30</div>
+        <div class="mini-sign triangle"><span>!</span></div>
+        <div class="mini-sign blue">→</div>
+      </div>
+      <h2>${isEn ? 'Ready to practice?' : 'Készen állsz a gyakorlásra?'}</h2>
+      <p>${isEn
+        ? 'Questions cover right of way, signs, speed and stopping distance, moped equipment, pedestrians, parking, and first aid — the real topics on the AM moped theory exam.'
+        : 'A kérdések az elsőbbség, táblák, sebesség és fékút, moped felszerelés, gyalogosok, megállás és elsősegély témaköreit fedik le — ezek a valódi AM moped elméleti vizsga témái.'}</p>
+      ${renderTopicsChips()}
+      <br>
+      <button class="start-btn" onclick="startQuiz()">${isEn ? 'Start practice' : 'Gyakorlás indítása'}</button>
+      <div class="exam-fact">
+        ${isEn
+          ? '📋 Real exam: 25 questions, 35 points, 30 needed to pass.'
+          : '📋 Valódi vizsga: 25 kérdés, 35 pont, 30 pont kell a sikerhez.'}
+      </div>
+    </div>
+  `;
+}
+
+function renderQuiz() {
+  const isEn = state.lang === 'en';
+  const q = state.pool[state.index];
+  const data = q[state.lang];
+  const correctPos = q.optOrder.indexOf(0);
+
+  const optionsHtml = q.optOrder.map((origIdx, pos) => {
+    let cls = "";
+    if (state.selected !== null) {
+      if (pos === correctPos) cls = "correct";
+      else if (pos === state.selected) cls = "wrong";
+    }
+    const letter = String.fromCharCode(65 + pos);
+    return `
+      <button class="option-btn ${cls}" ${state.selected !== null ? 'disabled' : ''} onclick="selectOption(${pos})">
+        <span class="option-letter">${letter}</span>
+        <span>${data.options[origIdx]}</span>
+      </button>
+    `;
+  }).join("");
+
+  const progressPct = Math.round((state.index / state.pool.length) * 100);
+
+  return `
+    ${renderHeader()}
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" style="width:${progressPct}%"></div></div>
+      <div class="progress-label">
+        <span>${isEn ? 'Question' : 'Kérdés'} ${state.index + 1} / ${state.pool.length}</span>
+        <span>${TOPIC_LABELS[q.topic][state.lang]}</span>
+      </div>
+    </div>
+    <div class="sign-card">
+      <div class="topic-tab">${TOPIC_LABELS[q.topic][state.lang]}</div>
+      <div class="q-text">${data.q}</div>
+      <div class="options">${optionsHtml}</div>
+      ${state.selected !== null ? `
+        <div class="explain-box"><strong>${isEn ? 'Why:' : 'Miért:'}</strong> ${data.explain}</div>
+        <button class="next-btn" onclick="nextQuestion()">${state.index + 1 >= state.pool.length ? (isEn ? 'See results' : 'Eredmény megnézése') : (isEn ? 'Next question' : 'Következő kérdés')}</button>
+      ` : ''}
+    </div>
+  `;
+}
+
+function renderResults() {
+  const isEn = state.lang === 'en';
+  const total = state.answers.length;
+  const correct = state.answers.filter(a => a.correct).length;
+  const pct = Math.round((correct / total) * 100);
+  const passed = pct >= 80; // mirror real exam's ~86% bar loosely, but use 80% as a practice bar
+
+  const r = 70, circumference = 2 * Math.PI * r;
+  const dash = (pct / 100) * circumference;
+
+  return `
+    ${renderHeader()}
+    <div class="results">
+      <div class="score-ring">
+        <svg width="160" height="160" viewBox="0 0 160 160">
+          <circle cx="80" cy="80" r="${r}" fill="none" stroke="#C9C4B4" stroke-width="14"/>
+          <circle cx="80" cy="80" r="${r}" fill="none" stroke="${passed ? '#1E7A3D' : '#C8102E'}"
+            stroke-width="14" stroke-linecap="round"
+            stroke-dasharray="${dash} ${circumference}"/>
+        </svg>
+        <div class="score-text">
+          <div class="pts">${correct}/${total}</div>
+          <div class="of">${pct}%</div>
+        </div>
+      </div>
+      <div class="pass-banner ${passed ? 'pass' : 'fail'}">
+        ${passed ? (isEn ? '✓ Solid score' : '✓ Szép eredmény') : (isEn ? 'Keep practicing' : 'Gyakorolj még')}
+      </div>
+      <h2>${isEn ? 'Practice round complete' : 'Gyakorló kör befejezve'}</h2>
+      <p class="sub">${isEn
+        ? 'Real exam needs 30 of 35 points (about 86%) to pass. Repeat any topic you missed.'
+        : 'A valódi vizsgán 35 pontból 30 pont kell a sikerhez (kb. 86%). Ismételd át, amiben hibáztál.'}</p>
+      <div>
+        <button class="restart-btn" onclick="restart(true)">${isEn ? 'Practice again' : 'Gyakorlás újra'}</button>
+        <button class="restart-btn outline" onclick="restart(false)">${isEn ? 'Choose new topic' : 'Új témakör választása'}</button>
+      </div>
+    </div>
+  `;
+}
+
+function render() {
+  const app = document.getElementById('app');
+  if (state.screen === 'start') app.innerHTML = renderStart();
+  else if (state.screen === 'quiz') app.innerHTML = renderQuiz();
+  else app.innerHTML = renderResults();
+}
+
+render();
+</script>
+</body>
+</html>
